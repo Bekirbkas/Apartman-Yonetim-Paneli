@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Apartment": {
+      "title": "Apartment",
+      "description": "An apartment building management account.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Apartment name." },
+        "city": { "type": "string", "description": "City (İl)." },
+        "district": { "type": "string", "description": "District (İlçe)." },
+        "neighborhood": { "type": "string", "description": "Neighborhood (Mahalle)." },
+        "password": { "type": "string", "description": "Manager password." },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "city", "district", "neighborhood", "password"]
+    },
+    "Resident": {
+      "title": "Resident",
+      "description": "A resident of the apartment complex.",
+      "type": "object",
+      "properties": {
+        "apartment_id": { "type": "string", "description": "Reference to the apartment." },
+        "apartment_no": { "type": "string", "description": "The apartment number." },
+        "name": { "type": "string", "description": "The name of the resident." }
+      },
+      "required": ["apartment_id", "apartment_no", "name"]
+    },
+    "IncomeCategory": {
+      "title": "IncomeCategory",
+      "description": "A category for income records.",
+      "type": "object",
+      "properties": {
+        "apartment_id": { "type": "string", "description": "Reference to the apartment." },
+        "name": { "type": "string", "description": "The name of the category." }
+      },
+      "required": ["apartment_id", "name"]
+    },
+    "ExpenseCategory": {
+      "title": "ExpenseCategory",
+      "description": "A category for expense records.",
+      "type": "object",
+      "properties": {
+        "apartment_id": { "type": "string", "description": "Reference to the apartment." },
+        "name": { "type": "string", "description": "The name of the category." }
+      },
+      "required": ["apartment_id", "name"]
+    },
+    "IncomeRecord": {
+      "title": "IncomeRecord",
+      "description": "A record of income received from a resident.",
+      "type": "object",
+      "properties": {
+        "apartment_id": { "type": "string", "description": "Reference to the apartment." },
+        "resident_id": { "type": "string", "description": "The ID of the resident." },
+        "category_id": { "type": "string", "description": "The ID of the income category." },
+        "month": { "type": "integer", "description": "The month (1-12)." },
+        "year": { "type": "integer", "description": "The year." },
+        "amount": { "type": "number", "description": "The amount received." },
+        "status": { "type": "string", "enum": ["paid", "exempt", "pending"], "description": "The status of the payment." }
+      },
+      "required": ["apartment_id", "resident_id", "category_id", "month", "year", "amount", "status"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "A record of an expense incurred.",
+      "type": "object",
+      "properties": {
+        "apartment_id": { "type": "string", "description": "Reference to the apartment." },
+        "date": { "type": "string", "format": "date", "description": "The date of the expense." },
+        "category_id": { "type": "string", "description": "The ID of the expense category." },
+        "description": { "type": "string", "description": "A description of the expense." },
+        "amount": { "type": "number", "description": "The amount spent." }
+      },
+      "required": ["apartment_id", "date", "category_id", "description", "amount"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Application settings.",
+      "type": "object",
+      "properties": {
+        "apartment_id": { "type": "string", "description": "Reference to the apartment." },
+        "key": { "type": "string", "description": "The setting key." },
+        "value": { "type": "string", "description": "The setting value." }
+      },
+      "required": ["apartment_id", "key", "value"]
+    }
+  },
+  "firestore": {
+    "/apartments": { "schema": "Apartment", "description": "Collection of apartments." },
+    "/residents": { "schema": "Resident", "description": "Collection of residents." },
+    "/income_categories": { "schema": "IncomeCategory", "description": "Collection of income categories." },
+    "/expense_categories": { "schema": "ExpenseCategory", "description": "Collection of expense categories." },
+    "/income_records": { "schema": "IncomeRecord", "description": "Collection of income records." },
+    "/expenses": { "schema": "Expense", "description": "Collection of expenses." },
+    "/settings": { "schema": "Settings", "description": "Collection of settings." }
+  }
+}

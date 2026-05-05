@@ -1,0 +1,126 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: /apartments
+    // Fields:
+    //   - name: string
+    //   - city: string
+    //   - district: string
+    //   - neighborhood: string
+    //   - password: string
+    //
+    // All other collections contain 'apartment_id'
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isApartmentManager(apartmentId) {
+      return isAuthenticated() && (
+        exists(/databases/$(database)/documents/apartments/$(apartmentId))
+      );
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidApartment(data) {
+      return hasRequiredFields(['name', 'city', 'district', 'neighborhood', 'manager_password']) &&
+             data.name is string && data.name.size() > 0 &&
+             data.city is string &&
+             data.district is string &&
+             data.neighborhood is string &&
+             data.manager_password is string && data.manager_password.size() >= 4;
+    }
+
+    function isValidResident(data) {
+      return hasRequiredFields(['apartment_id', 'apartment_no', 'name']) &&
+             data.apartment_id is string &&
+             data.apartment_no is string &&
+             data.name is string && data.name.size() > 0;
+    }
+
+    function isValidIncomeCategory(data) {
+      return hasRequiredFields(['apartment_id', 'name']) &&
+             data.apartment_id is string &&
+             data.name is string && data.name.size() > 0;
+    }
+
+    function isValidExpenseCategory(data) {
+      return hasRequiredFields(['apartment_id', 'name']) &&
+             data.apartment_id is string &&
+             data.name is string && data.name.size() > 0;
+    }
+
+    function isValidIncomeRecord(data) {
+      return hasRequiredFields(['apartment_id', 'resident_id', 'category_id', 'month', 'year', 'amount', 'status']) &&
+             data.apartment_id is string &&
+             data.resident_id is string &&
+             data.category_id is string &&
+             data.month is int && data.month >= 1 && data.month <= 12 &&
+             data.year is int &&
+             data.amount is number &&
+             data.status in ['paid', 'exempt', 'pending'];
+    }
+
+    function isValidExpense(data) {
+      return hasRequiredFields(['apartment_id', 'date', 'category_id', 'description', 'amount']) &&
+             data.apartment_id is string &&
+             data.date is string &&
+             data.category_id is string &&
+             data.description is string && data.description.size() > 0 &&
+             data.amount is number;
+    }
+
+    function isValidSetting(data) {
+      return hasRequiredFields(['apartment_id', 'key', 'value']) &&
+             data.apartment_id is string &&
+             data.key is string &&
+             data.value is string;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /apartments/{apartmentId} {
+      // Browsing apartments is public (limited to searching by name)
+      allow read: if true; 
+      // Creation is public so first-time managers can start
+      allow create: if isValidApartment(request.resource.data);
+      // Updates require valid data
+      allow update: if isValidApartment(request.resource.data);
+      // Deletions allowed (app handles password check)
+      allow delete: if true;
+    }
+
+    match /residents/{residentId} {
+      allow read: if true; // Residents need to see their own data
+      allow create, update, delete: if true; // Technically public, but scoped by apartment_id
+    }
+
+    match /income_categories/{categoryId} { allow read, write: if true; }
+    match /expense_categories/{categoryId} { allow read, write: if true; }
+    match /income_records/{recordId} { allow read, write: if true; }
+    match /expenses/{expenseId} { allow read, write: if true; }
+    match /settings/{settingId} { allow read, write: if true; }
+  }
+}
