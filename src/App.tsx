@@ -30,7 +30,9 @@ import {
   Eye,
   Search,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Info,
+  ShieldCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import jsPDF from 'jspdf';
@@ -59,6 +61,146 @@ import {
   updateIncomeCategoryRequiredAmount
 } from './services/firebaseService';
 import { TURKISH_CITIES, getDistricts, getNeighborhoods } from './services/locationService';
+
+function AppInfo() {
+  const currentDate = new Date().toLocaleDateString('tr-TR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+
+  return (
+    <div className="space-y-8 max-w-4xl mx-auto">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-zinc-100 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-none relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 p-8 opacity-5">
+          <Info size={120} />
+        </div>
+        
+        <div className="relative z-10">
+          <h2 className="text-3xl font-black mb-2">Uygulama Bilgileri</h2>
+          <p className="text-zinc-500 dark:text-zinc-400 mb-8 font-medium">Bina ve apartman yönetim sisteminiz hakkında detaylı bilgiler.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-6">
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 transition-all hover:scale-[1.02]">
+                <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-4">Geliştirici</h3>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/30">
+                    B
+                  </div>
+                  <div>
+                    <p className="font-bold text-lg">Bekir Buğra Kaş</p>
+                    <p className="text-sm text-zinc-500">Yazılım Geliştirici</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 transition-all hover:scale-[1.02]">
+                <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-4">Sürüm Bilgisi</h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-black text-2xl text-blue-600 dark:text-blue-400">0.81 BETA</p>
+                    <p className="text-sm text-zinc-500 mt-1">Son Güncelleme: {currentDate}</p>
+                  </div>
+                  <div className="px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold ring-1 ring-emerald-500/20">
+                    GÜNCEL
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-8 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg shadow-blue-500/20 flex flex-col justify-between">
+              <div>
+                <h3 className="font-black text-xl mb-4">Dijital Yönetim</h3>
+                <p className="text-white/80 text-sm leading-relaxed mb-6">
+                  Bu uygulama, apartman ve site yönetim süreçlerini dijitalleştirmek, aidat takibini kolaylaştırmak ve şeffaf bir gelir-gider yönetimi sağlamak amacıyla geliştirilmiştir.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={20} />
+                <span className="text-xs font-bold uppercase tracking-wider">Güvenli Veri Altyapısı</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-zinc-100 dark:border-zinc-800"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center">
+              <CheckCircle2 size={20} />
+            </div>
+            <h3 className="text-xl font-black">Kullanım Şartları</h3>
+          </div>
+          <div className="space-y-4 text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            <p className="flex gap-3">
+              <span className="font-black text-blue-500">01</span>
+              <span>Bu uygulama bireysel ve kurumsal apartman yönetimi amaçları için tasarlanmıştır.</span>
+            </p>
+            <p className="flex gap-3">
+              <span className="font-black text-blue-500">02</span>
+              <span>Verileriniz bulut altyapısında güvenli bir şekilde saklanmakta olup, üçüncü taraflarla paylaşılmamaktadır.</span>
+            </p>
+            <p className="flex gap-3">
+              <span className="font-black text-blue-500">03</span>
+              <span>Sistemin kötüye kullanımı veya yasadışı faaliyetler için kullanılması yasaktır.</span>
+            </p>
+            <p className="flex gap-3">
+              <span className="font-black text-blue-500">04</span>
+              <span>Uygulama üzerindeki tüm hesaplamalar bilgi amaçlıdır, mali ve hukuki sorumluluk kullanıcıya aittir.</span>
+            </p>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-zinc-100 dark:border-zinc-800"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+              <ShieldCheck size={20} />
+            </div>
+            <h3 className="text-xl font-black">Gizlilik Politikası</h3>
+          </div>
+          <div className="space-y-4 text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            <p className="flex gap-3">
+              <span className="font-black text-blue-500">01</span>
+              <span>Toplanan veriler sadece apartman yönetimi fonksiyonlarının yerine getirilmesi için kullanılır.</span>
+            </p>
+            <p className="flex gap-3">
+              <span className="font-black text-blue-500">02</span>
+              <span>Şifreleriniz modern şifreleme yöntemleri ile korunmaktadır.</span>
+            </p>
+            <p className="flex gap-3">
+              <span className="font-black text-blue-500">03</span>
+              <span>Kullanıcı verileri KVKK standartlarına uygun olarak işlenmektedir.</span>
+            </p>
+            <p className="flex gap-3">
+              <span className="font-black text-blue-500">04</span>
+              <span>Herhangi bir güvenlik açığı bildirmek veya veri silme talebinde bulunmak için yönetici ile iletişime geçebilirsiniz.</span>
+            </p>
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="flex justify-center pb-8">
+        <p className="text-xs text-zinc-400 font-medium">© 2026 Bekir Buğra Kaş - Tüm hakları saklıdır.</p>
+      </div>
+    </div>
+  );
+}
 
 function ApartmentSettings({ apartment, onUpdate, onDelete }: { apartment: Apartment, onUpdate: (updates: Partial<Apartment>) => Promise<void>, onDelete: () => Promise<void> }) {
   const [name, setName] = useState(apartment.display_name || apartment.name);
@@ -469,7 +611,7 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [data, setData] = useState<AppData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'income_list' | 'income_table' | 'expense_list' | 'expense_table' | 'residents' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'income_list' | 'income_table' | 'expense_list' | 'expense_table' | 'residents' | 'settings' | 'app_info'>('dashboard');
   const [darkMode, setDarkMode] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>(''); 
   const [selectedYear] = useState(2026);
@@ -676,6 +818,13 @@ export default function App() {
                 />
               </>
             )}
+            <div className="pt-4 pb-2 px-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Sistem</div>
+            <NavItem 
+              icon={<Info size={18} />} 
+              label="Uygulama Bilgileri" 
+              active={activeTab === 'app_info'} 
+              onClick={() => { setActiveTab('app_info'); setIsSidebarOpen(false); }} 
+            />
           </nav>
 
           <button 
@@ -707,6 +856,7 @@ export default function App() {
                 {activeTab === 'expense_list' && 'Gider Kayıtları'}
                 {activeTab === 'expense_table' && 'Gider Çizelgesi'}
                 {activeTab === 'residents' && 'Apartman Sakinleri'}
+                {activeTab === 'app_info' && 'Uygulama Bilgileri'}
               </h2>
               <p className="text-zinc-500 dark:text-zinc-400 text-sm">
                 Hoş geldiniz, {userRole === 'manager' ? 'Sayın Yönetici' : 'Sayın Apartment Sakini'}.
@@ -792,6 +942,7 @@ export default function App() {
             }}
           />
         )}
+        {activeTab === 'app_info' && <AppInfo />}
       </main>
 
       {/* Modals */}
